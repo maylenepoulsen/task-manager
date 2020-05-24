@@ -18,11 +18,33 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
   //   console.log(user)
   // })
 
-  db.collection('users').find( { age: 40 } ).toArray((error, users) => {
-    if (error) {
-      return console.log('Unable to fetch users')
-    }
+  // db.collection('users').find( { age: 40 } ).toArray((error, users) => {
+  //   if (error) {
+  //     return console.log('Unable to fetch users')
+  //   }
 
-    console.log(users)
+  //   console.log(users)
+  // })
+
+  // db.collection('users').find( { age: 40 } ).count((error, count) => {
+  //   if (error) {
+  //     return console.log('Unable to fetch')
+  //   }
+
+  //   console.log(count)
+  // })
+
+  db.collection('tasks').findOne( { _id: new ObjectID('5ec99317970e2d0d136ad172')}, (error, task) => {
+    if (error) {
+      return console.log(error)
+    }
+    console.log(task)
+  })
+
+  db.collection('tasks').find( { completed: false }).toArray((error, tasks) => {
+    if (error) {
+      return console.log('Unable to fetch tasks')
+    }
+    console.log(tasks)
   })
 })
