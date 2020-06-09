@@ -48,6 +48,8 @@ const userSchema = new mongoose.Schema({
       required: true
     }
   }]
+}, {
+  timestamps: true
 })
 
 userSchema.virtual('tasks', {
@@ -111,4 +113,4 @@ userSchema.pre('remove', async function (next) {
 
 const User = mongoose.model('User', userSchema  )
 
-  module.exports = User;
+module.exports = User;
