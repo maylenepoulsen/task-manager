@@ -1,24 +1,9 @@
 const request = require('supertest')
-const jwt = require('jsonwebtoken')
-const mongoose = require('mongoose')
 const app = require('../src/app')
 const User = require('../src/models/user')
+const { user1Id, user1, configureDatabase } = require('./fixtures/db')
 
-const user1Id = new mongoose.Types.ObjectId()
-const user1 = {
-  _id: user1Id,
-  name: 'Sophie',
-  email: 'sophie@example.com',
-  password: 'Sophie123!',
-  tokens: [{
-    token: jwt.sign({ _id: user1Id }, process.env.JWT_SECRET)
-  }]
-}
-
-beforeEach(async () => {
-  await User.deleteMany()
-  await new User(user1).save()
-})
+beforeEach(configureDatabase)
 
 test('Should signup a new user', async () => {
   const response = await request(app).post('/users').send({
@@ -66,6 +51,16 @@ test('Should get profile for user', async () => {
     .set('Authorization', `Bearer ${user1.tokens[0].token}`)
     .send()
     .expect(200)
+})
+
+test('Should not update user with invalid email', async () => {
+  await request(app)
+    .patch('/users/me')
+    .set('Authorization', `Bearer ${user1.tokens[0].token}`)
+    .send({
+      email: 'SOPHIe@'
+    })
+    .expect(400)
 })
 
 test('Should not get profile for unauthenticated user', async () => {
